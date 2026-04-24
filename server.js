@@ -93,25 +93,14 @@ app.delete("/api/rooms/:id", (req, res) => {
 
 // ================= BOOKINGS =================
 
-// GET bookings
+app.get("/api/rooms", (req, res) => {
+  const data = getData();
+  res.json(data.rooms);
+});
+
 app.get("/api/bookings", (req, res) => {
   const data = getData();
   res.json(data.bookings);
-});
-
-// ADD booking
-app.post("/api/bookings", (req, res) => {
-  const data = getData();
-
-  const newBooking = {
-    id: Date.now(),
-    ...req.body
-  };
-
-  data.bookings.push(newBooking);
-  saveData(data);
-
-  res.json(newBooking);
 });
 
 // UPDATE booking

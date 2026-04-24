@@ -1,78 +1,95 @@
-const express = require('express');
-const Room = require('../models/Room');
-const Booking = require('../models/Booking');
-
+const express = require("express");
 const router = express.Router();
+const axios = require("axios");
 
-// Get all rooms
+const BASE_URL = "http://localhost:3001";
+
+// ✅ GET all bookings
 router.get("/", async (req, res) => {
   try {
-    const rooms = await Room.find();
-    res.json(rooms);
+    const response = await axios.get(`${BASE_URL}/bookings`);
+    res.json(response.data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-// Add new room
+
+
+// ✅ GET single booking
+router.get("/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    const response = await axios.get(`${BASE_URL}/bookings/${id}`);
+    res.json(response.data);
+  } catch (err) {
+    res.status(404).json({ message: "Booking not found" });
+  }
+});
+
+
+// ✅ CREATE booking
 router.post("/", async (req, res) => {
   try {
-    console.log("BODY RECEIVED:", req.body); // 🔥 IMPORTANT
+    const newBooking = {
+      id: Date.now(), // generate unique id
+      ...req.body
+    };
 
-    const room = new Room(req.body);
-    await room.save();
+    const response = await axios.post(`${BASE_URL}/bookings`, newBooking);
 
-    res.status(201).json(room);
+    res.status(201).json(response.data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Update room
+
+// ✅ UPDATE booking (PUT)
+router.put("/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    const response = await axios.put(
+      `${BASE_URL}/bookings/${id}`,
+      req.body
+    );
+
+    res.json(response.data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ✅ UPDATE booking (PATCH - optional, better)
+router.patch("/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    const response = await axios.patch(
+      `${BASE_URL}/bookings/${id}`,
+      req.body
+    );
+
+    res.json(response.data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ✅ DELETE booking
 router.delete("/:id", async (req, res) => {
   try {
-    const existingBooking = await Booking.findOne({
-      roomId: req.params.id
-    });
+    const id = parseInt(req.params.id);
 
-    if (existingBooking) {
-      return res.status(400).json({
-        message: "Cannot delete room. It has active bookings"
-      });
-    }
+    await axios.delete(`${BASE_URL}/bookings/${id}`);
 
-    const deleted = await Room.findByIdAndDelete(req.params.id);
-
-    if (!deleted) {
-      return res.status(404).json({ message: "Room not found" });
-    }
-
-    res.json({ message: "Room deleted successfully" });
+    res.json({ message: "Deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-// Delete room
-router.delete("/:id", async (req, res) => {
-  try {
-    const existingBooking = await Booking.findOne({
-      roomId: req.params.id
-    });
 
-    if (existingBooking) {
-      return res.status(400).json({
-        message: "Cannot delete room. It has active bookings"
-      });
-    }
-
-    const deleted = await Room.findByIdAndDelete(req.params.id);
-
-    if (!deleted) {
-      return res.status(404).json({ message: "Room not found" });
-    }
-
-    res.json({ message: "Room deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 module.exports = router;
