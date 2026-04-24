@@ -1,0 +1,43 @@
+{
+  "rooms": [
+    {
+      "id": "1",
+      "number": "2011",
+      "type": "Deluxe",
+      "status": "occupied"
+    },
+    {
+      "id": "2",
+      "number": "2011",
+      "type": "Deluxe",
+      "status": "occupied"
+    },
+    {
+      "id": "2",
+      "number": "2011",
+      "type": "Deluxe",
+      "status": "occupied"
+    },
+    {
+      "id": "3",
+      "number": "2011",
+      "type": "Deluxe",
+      "status": "occupied"
+    },
+    {
+      "id": "4",
+      "number": "2011111",
+      "type": "Deluxe",
+      "status": "occupied"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "1",
+      "name": "Rohit Sharma",
+      "room": 201,
+      "status": "checked-in"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
